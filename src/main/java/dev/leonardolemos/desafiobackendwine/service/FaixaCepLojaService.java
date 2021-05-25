@@ -60,6 +60,8 @@ public class FaixaCepLojaService {
 
             if (faixaCepLoja != null) {
                 isFaixaAlreadySaved = faixaCepLojaRepository.faixaAlreadyExistsAndIsNotItself(faixaCepLoja.getId(), request.getInicioFaixaCep(), request.getFimFaixaCep());
+            } else {
+                throw new FaixaCepNotFoundException("O programa não pôde atualizar a faixa de CEP para a loja de código [" + request.getCodigoLoja() + "], a faixa não está cadastrada.");
             }
         }
 

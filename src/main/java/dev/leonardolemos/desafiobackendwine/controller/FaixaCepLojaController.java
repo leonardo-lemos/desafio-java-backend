@@ -1,6 +1,8 @@
 package dev.leonardolemos.desafiobackendwine.controller;
 
+import dev.leonardolemos.desafiobackendwine.exception.FaixaCepNotFoundException;
 import dev.leonardolemos.desafiobackendwine.exception.FaixaCepValidationException;
+import dev.leonardolemos.desafiobackendwine.exception.LojaNotFoundException;
 import dev.leonardolemos.desafiobackendwine.model.FaixaCepLoja;
 import dev.leonardolemos.desafiobackendwine.model.dto.LojaResponseDTO;
 import dev.leonardolemos.desafiobackendwine.service.FaixaCepLojaService;
@@ -61,6 +63,9 @@ public class FaixaCepLojaController {
                     }),
             @ApiResponse(responseCode = "400",
                     description = "A faixa enviada para ser atualizada não é válida"
+            ),
+            @ApiResponse(responseCode = "404",
+                    description = "A faixa enviada para ser atualizada não existe"
             )
     })
     @PutMapping("/faixas")
@@ -70,6 +75,9 @@ public class FaixaCepLojaController {
         } catch (FaixaCepValidationException e) {
             log.error("", e);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        } catch (FaixaCepNotFoundException e) {
+            log.error("", e);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
     }
 
@@ -89,7 +97,7 @@ public class FaixaCepLojaController {
     void delete(@PathVariable Long id) {
         try {
             faixaCepLojaService.delete(id);
-        } catch (FaixaCepValidationException e) {
+        } catch (FaixaCepNotFoundException e) {
             log.error("", e);
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
@@ -107,11 +115,11 @@ public class FaixaCepLojaController {
                     description = "Não existe Loja dentro da faixa do CEP informado"
             )
     })
-    @GetMapping("/faixas/{cep}")
+    @GetMapping("/faixas/nearbylojabycep/{cep}")
     LojaResponseDTO findNearbyLoja(@PathVariable Long cep) {
         try {
             return faixaCepLojaService.findNearbyLojaByCep(cep);
-        } catch (FaixaCepValidationException e) {
+        } catch (LojaNotFoundException e) {
             log.error("", e);
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }

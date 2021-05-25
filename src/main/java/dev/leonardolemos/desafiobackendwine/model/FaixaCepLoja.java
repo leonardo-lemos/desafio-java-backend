@@ -41,7 +41,7 @@ class FaixaCepLoja extends BaseEntity {
     @AssertTrue(message = "O campo [faixa_inicio] precisa conter 8 dígitos")
     public boolean isFaixaInicioValid() {
         if (inicioFaixaCep != null) {
-            return inicioFaixaCep.toString().length() >= 8;
+            return inicioFaixaCep.toString().length() == 8;
         }
 
         return false;
@@ -51,7 +51,7 @@ class FaixaCepLoja extends BaseEntity {
     @AssertTrue(message = "O campo [faixa_fim] precisa conter 8 dígitos")
     public boolean isFaixaFimValid() {
         if (fimFaixaCep != null) {
-            return fimFaixaCep.toString().length() >= 8;
+            return fimFaixaCep.toString().length() == 8;
         }
 
         return false;

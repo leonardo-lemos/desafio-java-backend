@@ -38,15 +38,14 @@ public class FaixaCepLojaServiceTest {
     public void test_saving_new_faixa_that_already_exists() {
         when(faixaCepLojaRepository.faixaAlreadyExists(any(), any())).thenReturn(true);
 
-        FaixaCepLoja faixaCepLoja = new FaixaCepLoja("LOJA_CAMPO_GRANDE", 10000000L, 20000000L);
+        FaixaCepLoja faixaCepLoja = setup_loja_campo_grande(false);
 
         faixaCepLojaService.save(faixaCepLoja);
     }
 
     @Test(expected = FaixaCepValidationException.class)
     public void test_saving_new_faixa_that_already_exists_and_isnt_itself() {
-        FaixaCepLoja faixaCepLoja = new FaixaCepLoja("LOJA_CAMPO_GRANDE", 10000000L, 20000000L);
-        faixaCepLoja.setId(1L);
+        FaixaCepLoja faixaCepLoja = setup_loja_campo_grande(true);
 
         when(faixaCepLojaRepository.findById(any())).thenReturn(Optional.of(faixaCepLoja));
         when(faixaCepLojaRepository.faixaAlreadyExistsAndIsNotItself(any(), any(), any())).thenReturn(true);
@@ -56,12 +55,11 @@ public class FaixaCepLojaServiceTest {
 
     @Test
     public void test_saving_valid_faixa() {
-        FaixaCepLoja faixaCepLoja = new FaixaCepLoja("LOJA_CAMPO_GRANDE", 10000000L, 20000000L);
-        faixaCepLoja.setId(1L);
+        FaixaCepLoja faixaCepLoja = setup_loja_campo_grande(true);
 
         when(faixaCepLojaRepository.save(any(FaixaCepLoja.class))).thenReturn(faixaCepLoja);
 
-        FaixaCepLoja savedFaixa = faixaCepLojaService.save(new FaixaCepLoja("LOJA_CAMPO_GRANDE", 10000000L, 20000000L));
+        FaixaCepLoja savedFaixa = faixaCepLojaService.save(setup_loja_campo_grande(false));
 
         assertEquals(1L, savedFaixa.getId());
     }
@@ -73,8 +71,7 @@ public class FaixaCepLojaServiceTest {
 
     @Test
     public void test_existing_faixa_deleting() {
-        FaixaCepLoja faixaCepLoja = new FaixaCepLoja("LOJA_CAMPO_GRANDE", 10000000L, 20000000L);
-        faixaCepLoja.setId(1L);
+        FaixaCepLoja faixaCepLoja = setup_loja_campo_grande(true);
 
         when(faixaCepLojaRepository.findById(any())).thenReturn(Optional.of(faixaCepLoja));
 
@@ -93,6 +90,25 @@ public class FaixaCepLojaServiceTest {
         when(faixaCepLojaRepository.findCodigoLojaByCep(any())).thenReturn(lojaResponse);
 
         faixaCepLojaService.findNearbyLojaByCep(10000000L);
+    }
+
+    @Test(expected = FaixaCepNotFoundException.class)
+    public void test_updating_faixa_that_not_exists() {
+        FaixaCepLoja faixaCepLoja = setup_loja_campo_grande(true);
+
+        when(faixaCepLojaRepository.findById(any())).thenReturn(Optional.empty());
+
+        faixaCepLojaService.save(faixaCepLoja);
+    }
+
+    private FaixaCepLoja setup_loja_campo_grande(boolean includeId) {
+        FaixaCepLoja faixaCepLoja = new FaixaCepLoja("LOJA_CAMPO_GRANDE", 10000000L, 20000000L);
+
+        if (includeId) {
+            faixaCepLoja.setId(1L);
+        }
+
+        return faixaCepLoja;
     }
 
 }
