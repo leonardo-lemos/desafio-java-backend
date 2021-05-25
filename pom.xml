@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>dev.leonardolemos</groupId>
-    <artifactId>DesafioBackendWine</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <artifactId>desafio-backend-wine</artifactId>
+    <version>1.0.0</version>
     <name>DesafioBackendWine</name>
-    <description>Demo project for Spring Boot</description>
+    <description>Desafio Backend Java da Wine</description>
     <properties>
         <java.version>11</java.version>
     </properties>
